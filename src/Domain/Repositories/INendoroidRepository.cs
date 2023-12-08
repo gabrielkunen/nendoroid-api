@@ -8,4 +8,5 @@ public interface INendoroidRepository
     Task<bool> Any(string numeracao);
     Task<Nendoroid?> Get(string numeracao);
     Task Delete(string numeracao);
+    Task Update(Nendoroid nendoroid);
 }

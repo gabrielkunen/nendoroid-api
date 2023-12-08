@@ -17,8 +17,8 @@ public class NendoroidRepository : INendoroidRepository
 
     public async Task Add(Nendoroid nendoroid)
     {
-        var comando = $"INSERT INTO {_nomeTabela} (nome, numeracao, preco, serie, fabricante, escultor, cooperacao, datalancamento)"+
-            "VALUES (@nome, @numeracao, @preco, @serie, @fabricante, @escultor, @cooperacao, @datalancamento)";
+        var comando = $@"INSERT INTO {_nomeTabela} (nome, numeracao, preco, serie, fabricante, escultor, cooperacao, datalancamento)
+                        VALUES (@nome, @numeracao, @preco, @serie, @fabricante, @escultor, @cooperacao, @datalancamento)";
 
         var argumentos = new
         {
@@ -61,6 +61,26 @@ public class NendoroidRepository : INendoroidRepository
         var comando = $"DELETE FROM {_nomeTabela} WHERE NUMERACAO=(@numeracao)";
 
         var argumentos = new {  numeracao  };
+
+        await connection.ExecuteAsync(comando, argumentos);
+    }
+
+    public async Task Update(Nendoroid nendoroid)
+    {
+        var comando = $@"UPDATE {_nomeTabela}
+                    SET nome = @nome, preco = @preco, serie = @serie, fabricante = @fabricante, cooperacao = @cooperacao, datalancamento = @datalancamento
+                    WHERE numeracao = @numeracao";
+
+        var argumentos = new
+        {
+            nome = nendoroid.Nome,
+            preco = nendoroid.Preco,
+            serie = nendoroid.Serie,
+            fabricante = nendoroid.Fabricante,
+            cooperacao = nendoroid.Cooperacao,
+            datalancamento = nendoroid.DataLancamento,
+            numeracao = nendoroid.Numeracao
+        };
 
         await connection.ExecuteAsync(comando, argumentos);
     }
