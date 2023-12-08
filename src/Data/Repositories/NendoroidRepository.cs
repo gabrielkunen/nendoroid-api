@@ -15,10 +15,10 @@ public class NendoroidRepository : INendoroidRepository
         connection.Open();
     }
 
-    public async Task Add(Nendoroid nendoroid)
+    public async Task<int> Add(Nendoroid nendoroid)
     {
         var comando = $@"INSERT INTO {_nomeTabela} (nome, numeracao, preco, serie, fabricante, escultor, cooperacao, datalancamento)
-                        VALUES (@nome, @numeracao, @preco, @serie, @fabricante, @escultor, @cooperacao, @datalancamento)";
+                        VALUES (@nome, @numeracao, @preco, @serie, @fabricante, @escultor, @cooperacao, @datalancamento) RETURNING id";
 
         var argumentos = new
         {
@@ -32,7 +32,9 @@ public class NendoroidRepository : INendoroidRepository
             datalancamento = nendoroid.DataLancamento
         };
 
-        await connection.ExecuteAsync(comando, argumentos);
+        var id = await connection.ExecuteScalarAsync<int>(comando, argumentos);
+
+        return id;
     }
 
     public async Task<bool> Any(string numeracao)
