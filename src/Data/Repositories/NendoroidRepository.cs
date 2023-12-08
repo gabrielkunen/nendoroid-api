@@ -45,14 +45,23 @@ public class NendoroidRepository : INendoroidRepository
         return quantidade > 0;
     }
 
-    public async Task<Nendoroid> Get(string numeracao)
+    public async Task<Nendoroid?> Get(string numeracao)
     {
         var comando = $"SELECT * FROM {_nomeTabela} WHERE NUMERACAO = @numeracao";
 
         var argumentos = new { numeracao };
 
-        var nendoroid = await connection.QueryFirstAsync<Nendoroid>(comando, argumentos);
+        var nendoroid = await connection.QueryFirstOrDefaultAsync<Nendoroid>(comando, argumentos);
 
         return nendoroid;
+    }
+
+    public async Task Delete(string numeracao)
+    {
+        var comando = $"DELETE FROM {_nomeTabela} WHERE NUMERACAO=(@numeracao)";
+
+        var argumentos = new {  numeracao  };
+
+        await connection.ExecuteAsync(comando, argumentos);
     }
 }

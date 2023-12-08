@@ -34,7 +34,7 @@ public class NendoroidController(INendoroidRepository nendoroidRepository) : Con
         await _nendoroidRepository.Add(nendoroid);
         
         return CreatedAtAction(nameof(Get), new { numeracao = nendoroid.Numeracao }, 
-            new CustomResponse<Nendoroid>(HttpStatusCode.OK, "Nendoroid cadastrada com sucesso!", nendoroid));
+            new CustomResponse<Nendoroid>(HttpStatusCode.OK, "Nendoroid cadastrada com sucesso.", nendoroid));
     }
 
     [HttpGet]
@@ -48,6 +48,22 @@ public class NendoroidController(INendoroidRepository nendoroidRepository) : Con
         if(nendoroid == null)
             return NotFound(new NotFoundResponse("Nendoroid com esta numeração não cadastrada."));
 
-        return Ok(new CustomResponse<Nendoroid>(HttpStatusCode.OK, "Nendoroid encontrada com sucesso!", nendoroid));
+        return Ok(new CustomResponse<Nendoroid>(HttpStatusCode.OK, "Nendoroid encontrada com sucesso.", nendoroid));
+    }
+
+    [HttpDelete]
+    [ProducesResponseType(typeof(OkResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(NotFoundResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(InternalServerErrorResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Delete([FromQuery] string numeracao)
+    {
+        var nendoroid = await _nendoroidRepository.Get(numeracao);
+
+        if(nendoroid == null)
+            return NotFound(new NotFoundResponse("Nendoroid com esta numeração não cadastrada."));
+
+        await _nendoroidRepository.Delete(numeracao);
+
+        return Ok(new OkResponse("Nendoroid deletada com sucesso."));
     }
 }
