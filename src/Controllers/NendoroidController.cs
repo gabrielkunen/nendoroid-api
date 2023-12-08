@@ -3,6 +3,7 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using NendoroidApi.Domain.Models;
 using NendoroidApi.Domain.Repositories;
+using NendoroidApi.Domain.Repositories.Base;
 using NendoroidApi.Request;
 using NendoroidApi.Response.Base;
 using NendoroidApi.Response.Common;
@@ -13,9 +14,10 @@ namespace NendoroidApi.Controllers;
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
 [Route("[controller]")]
-public class NendoroidController(INendoroidRepository nendoroidRepository) : ControllerBase
+public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository nendoroidRepository) : ControllerBase
 {
     private readonly INendoroidRepository _nendoroidRepository = nendoroidRepository;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     [HttpPost]
     [ProducesResponseType(typeof(CustomResponse<Nendoroid>), StatusCodes.Status201Created)]
@@ -31,8 +33,12 @@ public class NendoroidController(INendoroidRepository nendoroidRepository) : Con
 
         Nendoroid nendoroid = nendoroidRequest;
 
+        _unitOfWork.BeginTransaction();
+
         await _nendoroidRepository.Add(nendoroid);
         
+        _unitOfWork.Commit();
+
         return CreatedAtAction(nameof(Get), new { numeracao = nendoroid.Numeracao }, 
             new CustomResponse<Nendoroid>(HttpStatusCode.OK, "Nendoroid cadastrada com sucesso.", nendoroid));
     }

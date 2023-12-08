@@ -1,18 +1,16 @@
 using Dapper;
 using NendoroidApi.Domain.Models;
 using NendoroidApi.Domain.Repositories;
-using Npgsql;
 
 namespace NendoroidApi.Data.Repositories;
 
 public class NendoroidRepository : INendoroidRepository
 {
-    private NpgsqlConnection connection;
+    private DbSession _session;
     private const string _nomeTabela = "nendoroid";
-    public NendoroidRepository(IConfiguration configuration)
+    public NendoroidRepository(DbSession session)
     {
-        connection = new NpgsqlConnection(configuration.GetConnectionString("Postgre"));
-        connection.Open();
+        _session = session;
     }
 
     public async Task<int> Add(Nendoroid nendoroid)
@@ -32,7 +30,7 @@ public class NendoroidRepository : INendoroidRepository
             datalancamento = nendoroid.DataLancamento
         };
 
-        var id = await connection.ExecuteScalarAsync<int>(comando, argumentos);
+        var id = await _session.Connection.ExecuteScalarAsync<int>(comando, argumentos, _session.Transaction);
 
         return id;
     }
@@ -43,7 +41,7 @@ public class NendoroidRepository : INendoroidRepository
 
         var argumentos = new { numeracao };
 
-        var quantidade = await connection.QueryFirstAsync<int>(comando, argumentos);
+        var quantidade = await _session.Connection.QueryFirstAsync<int>(comando, argumentos, _session.Transaction);
         return quantidade > 0;
     }
 
@@ -53,7 +51,7 @@ public class NendoroidRepository : INendoroidRepository
 
         var argumentos = new { numeracao };
 
-        var nendoroid = await connection.QueryFirstOrDefaultAsync<Nendoroid>(comando, argumentos);
+        var nendoroid = await _session.Connection.QueryFirstOrDefaultAsync<Nendoroid>(comando, argumentos, _session.Transaction);
 
         return nendoroid;
     }
@@ -64,7 +62,7 @@ public class NendoroidRepository : INendoroidRepository
 
         var argumentos = new {  numeracao  };
 
-        await connection.ExecuteAsync(comando, argumentos);
+        await _session.Connection.ExecuteAsync(comando, argumentos, _session.Transaction);
     }
 
     public async Task Update(Nendoroid nendoroid)
@@ -84,6 +82,6 @@ public class NendoroidRepository : INendoroidRepository
             numeracao = nendoroid.Numeracao
         };
 
-        await connection.ExecuteAsync(comando, argumentos);
+        await _session.Connection.ExecuteAsync(comando, argumentos, _session.Transaction);
     }
 }

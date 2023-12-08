@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using NendoroidApi.Data;
 using NendoroidApi.Data.Repositories;
 using NendoroidApi.Domain.Repositories;
+using NendoroidApi.Domain.Repositories.Base;
 using NendoroidApi.Middlewares;
 using NendoroidApi.Response.Base;
 
@@ -16,6 +18,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<ApiBehaviorOptions>(options
     => options.InvalidModelStateResponseFactory = ModelValidationErrorResponse.GerarModelValidationErrorResponse);
 
+builder.Services.AddScoped<DbSession>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<INendoroidRepository, NendoroidRepository>();
 
 var app = builder.Build();
