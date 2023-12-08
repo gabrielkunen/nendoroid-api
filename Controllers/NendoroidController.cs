@@ -18,9 +18,10 @@ public class NendoroidController(INendoroidRepository nendoroidRepository) : Con
     private readonly INendoroidRepository _nendoroidRepository = nendoroidRepository;
 
     [HttpPost]
+    [ProducesResponseType(typeof(CustomResponse<Nendoroid>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ModelValidationErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ConflictResponse), StatusCodes.Status409Conflict)]
-    [ProducesResponseType(typeof(CustomResponse<Nendoroid>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(InternalServerErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Post([FromBody] NendoroidRequest nendoroidRequest)
     {
         var nendoroidJaExiste = await _nendoroidRepository.Any(nendoroidRequest.Numeracao);
@@ -39,6 +40,7 @@ public class NendoroidController(INendoroidRepository nendoroidRepository) : Con
     [HttpGet]
     [ProducesResponseType(typeof(CustomResponse<Nendoroid>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(NotFoundResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(InternalServerErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Nendoroid>> Get([FromQuery] string numeracao)
     {
         var nendoroid = await _nendoroidRepository.Get(numeracao);

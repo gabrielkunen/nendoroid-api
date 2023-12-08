@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NendoroidApi.Data.Repositories;
 using NendoroidApi.Domain.Repositories;
+using NendoroidApi.Middlewares;
 using NendoroidApi.Response.Base;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 //app.UseHttpsRedirection();
 
