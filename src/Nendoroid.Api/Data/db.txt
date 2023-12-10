@@ -32,3 +32,8 @@ ALTER TABLE nendoroid ALTER COLUMN dataalteracao DROP NOT NULL;
 ALTER TABLE nendoroid ALTER COLUMN datacadastro TYPE timestamp;
 ALTER TABLE nendoroid ALTER COLUMN dataalteracao TYPE timestamp;
 ALTER TABLE nendoroidfotos RENAME TO nendoroidimagens
+
+ALTER TABLE nendoroid ALTER COLUMN escultor DROP NOT NULL;
+ALTER TABLE nendoroid ALTER COLUMN preco DROP NOT NULL;
+ALTER TABLE nendoroid ALTER COLUMN nome TYPE VARCHAR(150);
+ALTER TABLE nendoroid ALTER COLUMN especificacoes TYPE VARCHAR(500);

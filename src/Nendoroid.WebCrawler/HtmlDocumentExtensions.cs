@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 
 namespace NendoroidWebCrawler;
@@ -27,18 +28,32 @@ public static class HtmlDocumentExtensions
             .SelectSingleNode("following-sibling::dd").InnerText.Trim();
     }
 
-    public static string ExtrairPreco(this HtmlDocument htmlDocument)
+    public static int? ExtrairPreco(this HtmlDocument htmlDocument)
     {
-        var preco = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Price']")
-            .SelectSingleNode("following-sibling::dd").InnerText.Trim();
-        preco = new Regex(@"[^\d]").Replace(preco, "");
-        return preco;
+        var precoNode = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Price']");
+        
+        if (precoNode != null)
+        {
+            var preco = precoNode.SelectSingleNode("following-sibling::dd").InnerText.Trim();
+            preco = new Regex(@"[^\d]").Replace(preco, "");
+            return Convert.ToInt32(preco);
+        }
+        
+        return null;
     }
 
-    public static string ExtrairDataLancamento(this HtmlDocument htmlDocument)
+    public static DateTime ExtrairDataLancamento(this HtmlDocument htmlDocument)
     {
-        var dataLancamento = htmlDocument.DocumentNode.SelectSingleNode("//dt[contains(@class, 'release_date')]").SelectSingleNode("following-sibling::dd").InnerText.Trim();
-        dataLancamento = dataLancamento[..7];
+        var dataLancamentoString = htmlDocument.DocumentNode.SelectSingleNode("//dt[contains(@class, 'release_date')]")
+            .SelectSingleNode("following-sibling::dd").InnerText.Trim();
+        var indexPrimeiroNumero = dataLancamentoString.IndexOfAny("0123456789".ToCharArray());
+        dataLancamentoString = dataLancamentoString.Substring(indexPrimeiroNumero, 7);
+        
+        var retornoParse = DateTime.TryParseExact(dataLancamentoString, "yyyy/MM", CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, 
+            out DateTime dataLancamento);
+        if (!retornoParse)
+           DateTime.TryParseExact(dataLancamentoString, "MM/yyyy", CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out dataLancamento); 
+
         return dataLancamento;
     }
 
@@ -48,9 +63,29 @@ public static class HtmlDocumentExtensions
 
         var escultorNode = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Sculptor']");
         if (escultorNode != null)
-            escultor = escultorNode.SelectSingleNode("following-sibling::dd").InnerText.Trim();
+            return escultorNode.SelectSingleNode("following-sibling::dd").InnerText.Trim();
+
+        escultorNode = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Sculpting/Paintwork']");
+
+        if(escultorNode != null)
+            return escultorNode.SelectSingleNode("following-sibling::dd").InnerText.Trim();
+        
+        escultorNode = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Sculpting/Cooperation']");
+
+        if(escultorNode != null)
+            return escultorNode.SelectSingleNode("following-sibling::dd").InnerText.Trim();
+
+        escultorNode = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Sculptor/Cooperation']");
+
+        if(escultorNode != null)
+            return escultorNode.SelectSingleNode("following-sibling::dd").InnerText.Trim();
+        
+        escultorNode = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Planning/Sculpting']");
+
+        if(escultorNode != null)
+            return escultorNode.SelectSingleNode("following-sibling::dd").InnerText.Trim();
         else
-            escultor = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Sculpting/Paintwork']").SelectSingleNode("following-sibling::dd").InnerText.Trim();
+            escultor = string.Empty;
 
         return escultor;
     }
@@ -61,17 +96,36 @@ public static class HtmlDocumentExtensions
 
         var cooperacaoNode = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Cooperation']");
         if (cooperacaoNode != null)
+            return cooperacaoNode.SelectSingleNode("following-sibling::dd").InnerText.Trim();
+        
+        cooperacaoNode = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()=' Cooperation']");
+        
+        if (cooperacaoNode != null)
+            return cooperacaoNode.SelectSingleNode("following-sibling::dd").InnerText.Trim();
+
+        cooperacaoNode = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Sculpting/Cooperation']");
+
+        if(cooperacaoNode != null)
+            return cooperacaoNode.SelectSingleNode("following-sibling::dd").InnerText.Trim();
+
+        cooperacaoNode = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Sculptor/Cooperation']");
+
+        if(cooperacaoNode != null)
             cooperacao = cooperacaoNode.SelectSingleNode("following-sibling::dd").InnerText.Trim();
         else
-            cooperacao = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()=' Cooperation']").SelectSingleNode("following-sibling::dd").InnerText.Trim();
+            cooperacao = string.Empty;
 
         return cooperacao;
     }
 
-    public static string ExtrairEspecificacoes(this HtmlDocument htmlDocument)
+    public static string? ExtrairEspecificacoes(this HtmlDocument htmlDocument)
     {
-        return htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Specifications']")
-            .SelectSingleNode("following-sibling::dd").InnerText.Trim();
+        var especificacoesNode = htmlDocument.DocumentNode.SelectSingleNode("//dt[text()='Specifications']");
+
+        if (especificacoesNode != null)
+            return especificacoesNode.SelectSingleNode("following-sibling::dd").InnerText.Trim();
+        else
+            return null;    
     }
 
     public static HtmlNodeCollection? ExtrairImagens(this HtmlDocument htmlDocument)

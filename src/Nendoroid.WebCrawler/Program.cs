@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using NendoroidApi.Domain.Models;
 using NendoroidWebCrawler;
 
@@ -7,11 +6,22 @@ using var httpClient = new HttpClient();
 int quantidadeAtualPaginas = await ExtrairQuantidadePaginas();
 const string urlGoodSmile = "https://www.goodsmile.info/en/products/category/nendoroid_series/page/";
 
-await ExtrairDados();
+var paginasPorTask = quantidadeAtualPaginas / 3;
 
-async Task ExtrairDados()
+Task[] tasks = 
+[
+    Task.Run(() => ExtrairDados(1, paginasPorTask)), 
+    Task.Run(() => ExtrairDados(paginasPorTask + 1, paginasPorTask * 2)), 
+    Task.Run(() => ExtrairDados(paginasPorTask * 2 + 1, quantidadeAtualPaginas))
+];
+
+await Task.WhenAll(tasks);
+
+WriteFile.LogWebCrawler(AppDomain.CurrentDomain.BaseDirectory + "/log/log.txt", "O processamento foi encerrado com sucesso.");
+
+async Task ExtrairDados(int paginaInicial, int paginaFinal)
 {
-    for (int i = 1; i <= 1; i++)
+    for (int i = paginaInicial; i <= paginaFinal; i++)
     {
         var url = urlGoodSmile + i;
         var html = await httpClient.GetStringAsync(url);
@@ -72,8 +82,11 @@ async Task ExtrairDadosPaginaNendoroid(HtmlDocument htmlDocumentNendo, string ne
     var cooperacao = htmlDocumentNendo.ExtrairCooperacao();
     var especificacoes = htmlDocumentNendo.ExtrairEspecificacoes();
 
-    var nendoroid = new Nendoroid(nome, numeracao, Convert.ToInt32(preco), serie, fabricante, escultor, cooperacao, 
-        DateTime.ParseExact(dataLancamento, "yyyy/MM", CultureInfo.InvariantCulture), nendoUrl, especificacoes);
+    var nendoroid = new Nendoroid(nome, numeracao, preco, serie, fabricante, escultor, cooperacao, 
+        dataLancamento, nendoUrl, especificacoes);
+
+    var nendoroidJaExiste = await DbPersistence.Any(nendoroid.Numeracao);
+    if (nendoroidJaExiste) await DbPersistence.Delete(nendoroid.Numeracao);
 
     var idNendo = await DbPersistence.Add(nendoroid);
 
