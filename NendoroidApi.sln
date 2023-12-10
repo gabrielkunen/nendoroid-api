@@ -1,25 +1,28 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.5.002.0
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "src/Nendoroid.Api/NendoroidApi", "src/Nendoroid.Api/NendoroidApi.csproj", "{9DEC4F09-4D8B-4B51-BB1E-00060859E2B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\NendoroidApi", "src\Nendoroid.Api\NendoroidApi.csproj", "{4B7CA9FE-CCB8-4000-9F5F-BE891A2E4C36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\NendoroidWebCrawler", "src\Nendoroid.WebCrawler\NendoroidWebCrawler.csproj", "{DD9D6F3A-06B5-40BF-88E4-F79657AFA17D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9DEC4F09-4D8B-4B51-BB1E-00060859E2B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DEC4F09-4D8B-4B51-BB1E-00060859E2B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DEC4F09-4D8B-4B51-BB1E-00060859E2B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DEC4F09-4D8B-4B51-BB1E-00060859E2B6}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {38F9DEF5-6CDE-4777-BD8D-43647713BB9D}
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4B7CA9FE-CCB8-4000-9F5F-BE891A2E4C36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B7CA9FE-CCB8-4000-9F5F-BE891A2E4C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B7CA9FE-CCB8-4000-9F5F-BE891A2E4C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B7CA9FE-CCB8-4000-9F5F-BE891A2E4C36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD9D6F3A-06B5-40BF-88E4-F79657AFA17D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD9D6F3A-06B5-40BF-88E4-F79657AFA17D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD9D6F3A-06B5-40BF-88E4-F79657AFA17D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD9D6F3A-06B5-40BF-88E4-F79657AFA17D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -9,10 +9,15 @@ public class Nendoroid {
     public string Escultor { get; private set; }
     public string Cooperacao { get; private set; }
     public DateTime DataLancamento { get; private set; }
+    public string Url { get; private set; }
+    public DateTime DataCadastro { get; private set; }
+    public DateTime DataAlteracao { get; private set; }
+    public string Especificacoes { get; private set; }
     
     // Dapper
     public Nendoroid(){}
-    public Nendoroid(string nome, string numeracao, decimal preco, string serie, string fabricante, string escultor, string cooperacao, DateTime dataLancamento)
+    public Nendoroid(string nome, string numeracao, decimal preco, string serie, string fabricante, string escultor, string cooperacao, 
+        DateTime dataLancamento, string url, string especificacoes)
     {
         Nome = nome;
         Numeracao = numeracao;
@@ -22,5 +27,7 @@ public class Nendoroid {
         Escultor = escultor;
         Cooperacao = cooperacao;
         DataLancamento = dataLancamento;
+        Url = url;
+        Especificacoes = especificacoes;
     }
 }

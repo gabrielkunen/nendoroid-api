@@ -25,8 +25,11 @@ public class NendoroidRequest {
     [StringLength(100, ErrorMessage = "O campo {0} não pode possuir mais que {1} caracteres.")]
     public string Cooperacao { get; set; }
     public DateTime DataLancamento { get; set; }
+    public string Url { get; set; }
+    public string Especificacoes { get; set; }
 
     public static implicit operator Nendoroid(NendoroidRequest request) =>
         new Nendoroid(request.Nome, request.Numeracao, request.Preco, request.Serie,
-            request.Fabricante, request.Escultor, request.Cooperacao, request.DataLancamento);
+            request.Fabricante, request.Escultor, request.Cooperacao, request.DataLancamento,
+            request.Url, request.Especificacoes);
 }
