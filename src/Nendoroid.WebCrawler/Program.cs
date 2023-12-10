@@ -1,14 +1,11 @@
 ﻿using System.Globalization;
-using Dapper;
 using HtmlAgilityPack;
 using NendoroidApi.Domain.Models;
 using NendoroidWebCrawler;
-using Npgsql;
 
 using var httpClient = new HttpClient();
 int quantidadeAtualPaginas = await ExtrairQuantidadePaginas();
 const string urlGoodSmile = "https://www.goodsmile.info/en/products/category/nendoroid_series/page/";
-const string connectionString = "Host=localhost;Username=postgres;Password=;Database=nendoroid";
 
 await ExtrairDados();
 
@@ -78,7 +75,7 @@ async Task ExtrairDadosPaginaNendoroid(HtmlDocument htmlDocumentNendo, string ne
     var nendoroid = new Nendoroid(nome, numeracao, Convert.ToInt32(preco), serie, fabricante, escultor, cooperacao, 
         DateTime.ParseExact(dataLancamento, "yyyy/MM", CultureInfo.InvariantCulture), nendoUrl, especificacoes);
 
-    var idNendo = await Add(nendoroid);
+    var idNendo = await DbPersistence.Add(nendoroid);
 
     await ExtrairImagensNendoroid(htmlDocumentNendo, idNendo);
 }
@@ -93,47 +90,5 @@ async Task ExtrairImagensNendoroid(HtmlDocument htmlDocumentNendo, int idNendo)
     foreach (var imagem in imagens)
         nendoroidImagens.Add(new NendoroidImagens(idNendo, "https:" + imagem.Attributes["src"].Value));
 
-    await AddFoto(nendoroidImagens);
-}
-
-async Task<int> Add(Nendoroid nendoroid)
-{
-    var comando = $@"INSERT INTO nendoroid (nome, numeracao, preco, serie, fabricante, escultor, cooperacao, datalancamento, url, datacadastro, especificacoes)
-                        VALUES (@nome, @numeracao, @preco, @serie, @fabricante, @escultor, @cooperacao, @datalancamento, @url, @datacadastro, @especificacoes) RETURNING id";
-
-    var argumentos = new
-    {
-        nome = nendoroid.Nome,
-        numeracao = nendoroid.Numeracao,
-        preco = nendoroid.Preco,
-        serie = nendoroid.Serie,
-        fabricante = nendoroid.Fabricante,
-        escultor = nendoroid.Escultor,
-        cooperacao = nendoroid.Cooperacao,
-        datalancamento = nendoroid.DataLancamento,
-        url = nendoroid.Url,
-        datacadastro = DateTime.UtcNow,
-        especificacoes = nendoroid.Especificacoes
-    };
-
-    var conexao = new NpgsqlConnection(connectionString);
-
-    var id = await conexao.ExecuteScalarAsync<int>(comando, argumentos);
-
-    return id;
-}
-
-async Task AddFoto(List<NendoroidImagens> nendoroidImagens)
-{
-    var comando = $@"INSERT INTO nendoroidimagens (idnendoroid, url)
-                        VALUES (@idnendoroid, @url)";
-
-    var argumentos = new List<object>();
-
-    foreach(var imagem in nendoroidImagens)
-        argumentos.Add(new {idnendoroid = imagem.IdNendoroid, url = imagem.Url});
-
-    var conexao = new NpgsqlConnection(connectionString);
-
-    await conexao.ExecuteAsync(comando, argumentos);
+    await DbPersistence.AddImagem(nendoroidImagens);
 }

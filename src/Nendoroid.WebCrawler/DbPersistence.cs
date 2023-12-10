@@ -1,0 +1,52 @@
+﻿using Dapper;
+using NendoroidApi.Domain.Models;
+using Npgsql;
+
+namespace NendoroidWebCrawler;
+
+public static class DbPersistence
+{
+    const string connectionString = "Host=localhost;Username=postgres;Password=;Database=nendoroid";
+
+    public static async Task<int> Add(Nendoroid nendoroid)
+    {
+        var comando = $@"INSERT INTO nendoroid (nome, numeracao, preco, serie, fabricante, escultor, cooperacao, datalancamento, url, datacadastro, especificacoes)
+                            VALUES (@nome, @numeracao, @preco, @serie, @fabricante, @escultor, @cooperacao, @datalancamento, @url, @datacadastro, @especificacoes) RETURNING id";
+
+        var argumentos = new
+        {
+            nome = nendoroid.Nome,
+            numeracao = nendoroid.Numeracao,
+            preco = nendoroid.Preco,
+            serie = nendoroid.Serie,
+            fabricante = nendoroid.Fabricante,
+            escultor = nendoroid.Escultor,
+            cooperacao = nendoroid.Cooperacao,
+            datalancamento = nendoroid.DataLancamento,
+            url = nendoroid.Url,
+            datacadastro = DateTime.UtcNow,
+            especificacoes = nendoroid.Especificacoes
+        };
+
+        var conexao = new NpgsqlConnection(connectionString);
+
+        var id = await conexao.ExecuteScalarAsync<int>(comando, argumentos);
+
+        return id;
+    }
+
+    public static async Task AddImagem(List<NendoroidImagens> nendoroidImagens)
+    {
+        var comando = $@"INSERT INTO nendoroidimagens (idnendoroid, url)
+                            VALUES (@idnendoroid, @url)";
+
+        var argumentos = new List<object>();
+
+        foreach(var imagem in nendoroidImagens)
+            argumentos.Add(new {idnendoroid = imagem.IdNendoroid, url = imagem.Url});
+
+        var conexao = new NpgsqlConnection(connectionString);
+
+        await conexao.ExecuteAsync(comando, argumentos);
+    }
+}
