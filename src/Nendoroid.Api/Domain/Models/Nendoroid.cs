@@ -11,7 +11,7 @@ public class Nendoroid {
     public DateTime DataLancamento { get; private set; }
     public string Url { get; private set; }
     public DateTime DataCadastro { get; private set; }
-    public DateTime DataAlteracao { get; private set; }
+    public DateTime? DataAlteracao { get; private set; }
     public string? Especificacoes { get; private set; }
     
     // Dapper
@@ -30,4 +30,7 @@ public class Nendoroid {
         Url = url;
         Especificacoes = especificacoes;
     }
+
+    public void SetarDataCadastroUtcNow() => DataCadastro = DateTime.UtcNow;
+    public void SetarDataAlteracaoUtcNow() => DataAlteracao = DateTime.UtcNow;
 }

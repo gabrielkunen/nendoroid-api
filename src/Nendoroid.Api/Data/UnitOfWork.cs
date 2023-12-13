@@ -1,5 +1,6 @@
-using NendoroidApi.Data;
 using NendoroidApi.Domain.Repositories.Base;
+
+namespace NendoroidApi.Data;
 
 public sealed class UnitOfWork : IUnitOfWork
 {

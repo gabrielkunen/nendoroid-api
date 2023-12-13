@@ -32,15 +32,22 @@ public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository ne
             return Conflict(new ConflictResponse("Nendoroid com esta numeração já cadastrada."));
 
         Nendoroid nendoroid = nendoroidRequest;
+        nendoroid.SetarDataCadastroUtcNow();
+        var listaNendoroidImagens = new List<NendoroidImagens>();
 
         _unitOfWork.BeginTransaction();
 
-        await _nendoroidRepository.Add(nendoroid);
-        
+        var idNendoroid = await _nendoroidRepository.Add(nendoroid);
+
+        for (var i = 0; i < nendoroidRequest.Imagens.Length; i++)
+            listaNendoroidImagens.Add(new NendoroidImagens(idNendoroid, nendoroidRequest.Imagens[i]));
+
+        await _nendoroidRepository.AddImagens(listaNendoroidImagens);
+
         _unitOfWork.Commit();
 
         return CreatedAtAction(nameof(Get), new { numeracao = nendoroid.Numeracao }, 
-            new CustomResponse<Nendoroid>(HttpStatusCode.OK, "Nendoroid cadastrada com sucesso.", nendoroid));
+            new CustomResponse<Nendoroid>(HttpStatusCode.Created, "Nendoroid cadastrada com sucesso.", nendoroid));
     }
 
     [HttpGet]
@@ -85,8 +92,20 @@ public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository ne
             return NotFound(new NotFoundResponse("Nendoroid com esta numeração não cadastrada."));
 
         Nendoroid nendoroid = nendoroidRequest;
+        nendoroid.SetarDataAlteracaoUtcNow();
+        var listaNendoroidImagens = new List<NendoroidImagens>();
 
-        await _nendoroidRepository.Update(nendoroid);
+        _unitOfWork.BeginTransaction();
+
+        var idNendoroid = await _nendoroidRepository.Update(nendoroid);
+
+        for (var i = 0; i < nendoroidRequest.Imagens.Length; i++)
+            listaNendoroidImagens.Add(new NendoroidImagens(idNendoroid, nendoroidRequest.Imagens[i]));
+
+        await _nendoroidRepository.DeleteImagens(idNendoroid);
+        await _nendoroidRepository.AddImagens(listaNendoroidImagens);
+
+        _unitOfWork.Commit();
 
         return Ok(new OkResponse("Nendoroid atualizada com sucesso."));
     }

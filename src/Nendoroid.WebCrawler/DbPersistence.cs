@@ -60,8 +60,7 @@ public static class DbPersistence
 
     public static async Task AddImagem(List<NendoroidImagens> nendoroidImagens)
     {
-        var comando = $@"INSERT INTO nendoroidimagens (idnendoroid, url)
-                            VALUES (@idnendoroid, @url)";
+        var comando = $@"INSERT INTO nendoroidimagens (idnendoroid, url) VALUES (@idnendoroid, @url)";
 
         var argumentos = new List<object>();
 

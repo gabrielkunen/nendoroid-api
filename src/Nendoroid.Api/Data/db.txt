@@ -37,3 +37,14 @@ ALTER TABLE nendoroid ALTER COLUMN escultor DROP NOT NULL;
 ALTER TABLE nendoroid ALTER COLUMN preco DROP NOT NULL;
 ALTER TABLE nendoroid ALTER COLUMN nome TYPE VARCHAR(150);
 ALTER TABLE nendoroid ALTER COLUMN especificacoes TYPE VARCHAR(500);
+
+INSERT INTO NENDOROID (nome, numeracao, preco, serie, fabricante, escultor, cooperacao, datalancamento, url, datacadastro, especificacoes)
+VALUES ('Nendoroid Hatsune Miku: Symphony 5th Anniversary Ver.', '1538', 7800, 'Character Vocal Series 01: Hatsune Miku', 'Good Smile Company', 'toytec D.T.C', 'Nendoron', '2021-08-01', 'https://www.goodsmile.info/en/product/10561/Nendoroid+Hatsune+Miku+Symphony+5th+Anniversary+Ver.html', NOW(), 'Painted ABS&PVC non-scale articulated figure with stand included. Figure: Approximately 100mm in height/Stand: Approximately W95mm x D95mm x H65mm');
+
+INSERT INTO NENDOROID (nome, numeracao, preco, serie, fabricante, escultor, cooperacao, datalancamento, url, datacadastro, especificacoes)
+VALUES ('Nendoroid Racing Miku 2014 Ver.', '414', null, 'Racing Miku 2014 Ver.', 'GOODSMILE RACING', 'Ajiken', 'Nendoron', '2014-10-01', 'https://www.goodsmile.info/en/product/4368/Nendoroid+Racing+Miku+2014+Ver.html', NOW(), 'Painted ABS&PVC non-scale articulated figure with stand included. Approximately 100mm in height.');
+
+SET timezone = 'UTC';
+
+ALTER TABLE nendoroid ALTER COLUMN datacadastro TYPE timestamp with time zone;
+ALTER TABLE nendoroid ALTER COLUMN dataalteracao TYPE timestamp with time zone;
