@@ -3,15 +3,24 @@ using System.Text.Json;
 using NendoroidApi.Response.Common;
 
 namespace NendoroidApi.Middlewares;
+
+/// <summary>
+/// Middleware de exceção durante a execução da API
+/// </summary>
 public class ExceptionMiddleware
 {
     private readonly RequestDelegate next;
 
+    /// <summary>
+    /// ctor
+    /// </summary>
+    /// <param name="next"></param>
     public ExceptionMiddleware(RequestDelegate next)
     {
         this.next = next;
     }
 
+    /// <inheritdoc />
     public async Task Invoke(HttpContext context)
     {
         try

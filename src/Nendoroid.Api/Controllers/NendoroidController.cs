@@ -10,6 +10,11 @@ using NendoroidApi.Response.Common;
 
 namespace NendoroidApi.Controllers;
 
+/// <summary>
+/// Nendoroid Controller
+/// </summary>
+/// <param name="unitOfWork"></param>
+/// <param name="nendoroidRepository"></param>
 [ApiController]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
@@ -19,7 +24,39 @@ public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository ne
     private readonly INendoroidRepository _nendoroidRepository = nendoroidRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
+    /// <summary>
+    /// Cadastro de uma nova nendoroid
+    /// </summary>
+    /// <param name="nendoroidRequest"></param>
+    /// <returns>A nova nendoroid criada</returns>
+    /// <remarks>
+    /// Request exemplo:
+    ///
+    ///     POST /Nendoroid
+    ///     {
+    ///        "nome": "Nendoroid Komari Koshigaya",
+    ///        "numeracao": "1583",
+    ///        "preco": 5000,
+    ///        "serie": "Non Non Biyori Nonstop",
+    ///        "fabricante": "Good Smile Company",
+    ///        "escultor": "Design COCO",
+    ///        "cooperacao": "Nendoron",
+    ///        "datalancamento": "2021-09",
+    ///        "url": "https://www.goodsmile.info/en/product/10894/Nendoroid+Komari+Koshigaya.html",
+    ///        "especificacoes": "Painted ABS&amp;PVC non-scale articulated figure with stand included. Approximately 100mm in height.",
+    ///        "imagens": [
+    ///            "https://images.goodsmile.info/cgm/images/product/20210303/10894/81844/large/06c15c220bd14006d387540da50a45bd.jpg", 
+    ///            "https://images.goodsmile.info/cgm/images/product/20210303/10894/81845/large/59d5c7c0bc7f62ab56890f758a1e52b0.jpg"
+    ///        ]
+    ///     }
+    ///
+    /// </remarks>
+    /// <response code="201">Nendoroid cadastrada com sucesso</response>
+    /// <response code="400">Erro no corpo da requisição</response>
+    /// <response code="409">Nendoroid já cadastrada</response>
+    /// <response code="500">Erro interno</response>
     [HttpPost]
+    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
     [ProducesResponseType(typeof(CustomResponse<Nendoroid>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ModelValidationErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ConflictResponse), StatusCodes.Status409Conflict)]
@@ -50,6 +87,20 @@ public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository ne
             new CustomResponse<Nendoroid>(HttpStatusCode.Created, "Nendoroid cadastrada com sucesso.", nendoroid));
     }
 
+    /// <summary>
+    /// Buscar dados de uma nendoroid
+    /// </summary>
+    /// <param name="numeracao"></param>
+    /// <remarks>
+    /// Request exemplo:
+    ///
+    ///     GET /Nendoroid?numeracao=1583
+    ///
+    /// </remarks>
+    /// <returns>Dados da nendoroid buscada</returns>
+    /// <response code="200">Nendoroid encontrada com sucesso</response>
+    /// <response code="404">Nendoroid não encontrada</response>
+    /// <response code="500">Erro interno</response>
     [HttpGet]
     [ProducesResponseType(typeof(CustomResponse<Nendoroid>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(NotFoundResponse), StatusCodes.Status404NotFound)]
@@ -64,6 +115,20 @@ public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository ne
         return Ok(new CustomResponse<Nendoroid>(HttpStatusCode.OK, "Nendoroid encontrada com sucesso.", nendoroid));
     }
 
+    /// <summary>
+    /// Deletar uma nendoroid
+    /// </summary>
+    /// <param name="numeracao"></param>
+    /// <remarks>
+    /// Request exemplo:
+    ///
+    ///     DELETE /Nendoroid?numeracao=1583
+    ///
+    /// </remarks>
+    /// <returns>Mensagem padrão</returns>
+    /// <response code="200">Nendoroid deletada com sucesso</response>
+    /// <response code="404">Nendoroid não encontrada</response>
+    /// <response code="500">Erro interno</response>
     [HttpDelete]
     [ProducesResponseType(typeof(OkResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(NotFoundResponse), StatusCodes.Status404NotFound)]
@@ -80,8 +145,40 @@ public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository ne
         return Ok(new OkResponse("Nendoroid deletada com sucesso."));
     }
 
+    /// <summary>
+    /// Editar os dados de uma nendoroid
+    /// </summary>
+    /// <param name="nendoroidRequest"></param>
+    /// <remarks>
+    /// Request exemplo:
+    ///
+    ///     PUT /Nendoroid
+    ///     {
+    ///        "nome": "Nendoroid Komari Koshigaya",
+    ///        "numeracao": "1583",
+    ///        "preco": 5000,
+    ///        "serie": "Non Non Biyori Nonstop",
+    ///        "fabricante": "Good Smile Company",
+    ///        "escultor": "Design COCO",
+    ///        "cooperacao": "Nendoron",
+    ///        "datalancamento": "2021-09",
+    ///        "url": "https://www.goodsmile.info/en/product/10894/Nendoroid+Komari+Koshigaya.html",
+    ///        "especificacoes": "Painted ABS&amp;PVC non-scale articulated figure with stand included. Approximately 100mm in height.",
+    ///        "imagens": [
+    ///            "https://images.goodsmile.info/cgm/images/product/20210303/10894/81844/large/06c15c220bd14006d387540da50a45bd.jpg", 
+    ///            "https://images.goodsmile.info/cgm/images/product/20210303/10894/81845/large/59d5c7c0bc7f62ab56890f758a1e52b0.jpg"
+    ///        ]
+    ///     }
+    ///
+    /// </remarks>
+    /// <returns>Mensagem padrão</returns>
+    /// <response code="200">Nendoroid alterada com sucesso</response>
+    /// <response code="400">Erro no corpo da requisição</response>
+    /// <response code="404">Nendoroid não encontrada</response>
+    /// <response code="500">Erro interno</response>
     [HttpPut]
     [ProducesResponseType(typeof(OkResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ModelValidationErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(NotFoundResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(InternalServerErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Put([FromBody] NendoroidRequest nendoroidRequest)

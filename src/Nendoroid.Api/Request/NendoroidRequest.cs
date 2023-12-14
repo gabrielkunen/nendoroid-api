@@ -4,6 +4,9 @@ using NendoroidApi.Domain.Models;
 
 namespace NendoroidApi.Request;
 
+/// <summary>
+/// Requisição para cadastro de uma nendoroid
+/// </summary>
 public class NendoroidRequest {
 
     [Required(ErrorMessage = "O campo {0} é obrigatório.")]

@@ -1,4 +1,6 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 using NendoroidApi.Data;
 using NendoroidApi.Data.Repositories;
 using NendoroidApi.Domain.Repositories;
@@ -8,12 +10,24 @@ using NendoroidApi.Response.Base;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options => {
+    options.SwaggerDoc("v1", new OpenApiInfo{
+        Version = "v1",
+        Title = "Nendoroid API",
+        Description = "Nendoroid API",
+        Contact = new OpenApiContact
+        {
+            Name = "Gabriel Mariano Kunen",
+            Url = new Uri("https://www.linkedin.com/in/gabriel-mariano-kunen-02563a195/")
+        }
+    });
+
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 
 builder.Services.Configure<ApiBehaviorOptions>(options
     => options.InvalidModelStateResponseFactory = ModelValidationErrorResponse.GerarModelValidationErrorResponse);
@@ -24,7 +38,6 @@ builder.Services.AddTransient<INendoroidRepository, NendoroidRepository>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

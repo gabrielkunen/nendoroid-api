@@ -13,6 +13,6 @@ public abstract class BaseResponse {
         StatusCode = statusCode;
         Sucesso = statusCode.IsSuccess();
         Mensagem = mensagem;
-        Timestamp = DateTime.Now;
+        Timestamp = DateTime.UtcNow;
     }
 }
