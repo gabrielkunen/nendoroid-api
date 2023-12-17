@@ -7,7 +7,7 @@ namespace NendoroidApi.Filters;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class CustomAuthorize : Attribute, IAuthorizationFilter
 {
-    public string Role { get; set; }
+    public string[] Roles { get; set; }
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
@@ -32,8 +32,9 @@ public class CustomAuthorize : Attribute, IAuthorizationFilter
 
     private bool IsInRole(AuthorizationFilterContext context)
     {
-        if (context.HttpContext.User.IsInRole(Role))
-            return true;
+        foreach(var role in Roles)
+            if (context.HttpContext.User.IsInRole(role))
+                return true;
 
         return false;
     }

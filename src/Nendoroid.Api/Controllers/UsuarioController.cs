@@ -41,14 +41,16 @@ public class UsuarioController(IUsuarioRepository usuarioRepository, IUnitOfWork
     /// <response code="401">Não autenticado</response>
     /// <response code="403">Não autorizado</response>
     /// <response code="409">Usuário já cadastrado</response>
+    /// <response code="429">Excesso de requisições.</response>
     /// <response code="500">Erro interno</response>
     [HttpPost]
-    [CustomAuthorize(Role = "admin")]
+    [CustomAuthorize(Roles = ["admin"])]
     [ProducesResponseType(typeof(CustomResponse<object>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ModelValidationErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(NaoAutenticadoResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(NaoAutorizadoResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ConflictResponse), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(TooManyRequestResponse), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(InternalServerErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Post(CriarUsuarioRequest request)
     {

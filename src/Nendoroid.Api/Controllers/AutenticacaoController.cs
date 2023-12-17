@@ -39,12 +39,14 @@ public class AutenticacaoController(IUsuarioRepository usuarioRepository, IToken
     /// <response code="200">Login realizado com sucesso</response>
     /// <response code="400">Erro no corpo da requisição</response>
     /// <response code="401">Usuário ou senha inválidos.</response>
+    /// <response code="429">Excesso de requisições.</response>
     /// <response code="500">Erro interno</response>
     [HttpPost("/Login")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(CustomResponse<LoginResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ModelValidationErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(NaoAutenticadoResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(TooManyRequestResponse), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(InternalServerErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Login(LoginRequest request)
     {
