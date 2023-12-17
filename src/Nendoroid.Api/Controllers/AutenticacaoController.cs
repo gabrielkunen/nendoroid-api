@@ -2,6 +2,7 @@
 using System.Net.Mime;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using NendoroidApi.Domain.Repositories;
 using NendoroidApi.Domain.Services;
 using NendoroidApi.Response;
@@ -14,6 +15,7 @@ namespace NendoroidApi.Controllers;
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
 [Route("[controller]")]
+[EnableRateLimiting("ApiBlock")]
 public class AutenticacaoController(IUsuarioRepository usuarioRepository, ITokenService tokenService) : ControllerBase
 {
     private readonly IUsuarioRepository _usuarioRepository = usuarioRepository;

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using NendoroidApi.Domain.Models;
 using NendoroidApi.Domain.Repositories;
 using NendoroidApi.Domain.Repositories.Base;
@@ -14,6 +15,7 @@ namespace NendoroidApi.Controllers;
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
 [Route("[controller]")]
+[EnableRateLimiting("ApiBlock")]
 public class UsuarioController(IUsuarioRepository usuarioRepository, IUnitOfWork unitOfWork) : ControllerBase
 {
     private readonly IUsuarioRepository _usuarioRepository = usuarioRepository;

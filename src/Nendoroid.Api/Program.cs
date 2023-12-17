@@ -1,9 +1,12 @@
 using System.Reflection;
 using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NendoroidApi;
 using NendoroidApi.Data;
 using NendoroidApi.Data.Repositories;
 using NendoroidApi.Domain.Repositories;
@@ -79,7 +82,44 @@ builder.Services
             ValidateAudience = false
         };
     });
+
 builder.Services.AddAuthorization(); 
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.AddFixedWindowLimiter(policyName: "ApiBlock", options =>
+    {
+        options.PermitLimit = 5;
+        options.Window = TimeSpan.FromSeconds(10);
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 0;
+    });
+
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = 429;
+        context.HttpContext.Response.ContentType = "application/json";
+
+        TooManyRequestResponse responseContent;
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+        {
+            responseContent = new TooManyRequestResponse($"Você excedeu o máximo de requests no momento. Tente novamente em {retryAfter.TotalSeconds} segundo(s).");
+        }
+        else
+        {
+            responseContent = new TooManyRequestResponse("Você excedeu o máximo de requests no momento. Tente novamente mais tarde.");
+        }
+
+        var jsonResult = new JsonResult(responseContent);
+        await jsonResult.ExecuteResultAsync(new ActionContext
+        {
+            HttpContext = context.HttpContext
+        });
+    };
+});
+
 
 builder.Services.AddScoped<DbSession>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -94,6 +134,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseRateLimiter();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
