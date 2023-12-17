@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using NendoroidApi.Domain.Models;
 using NendoroidApi.Domain.Repositories;
 using NendoroidApi.Domain.Repositories.Base;
+using NendoroidApi.Filters;
 using NendoroidApi.Request;
 using NendoroidApi.Response.Base;
 using NendoroidApi.Response.Common;
@@ -53,12 +54,16 @@ public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository ne
     /// </remarks>
     /// <response code="201">Nendoroid cadastrada com sucesso</response>
     /// <response code="400">Erro no corpo da requisição</response>
+    /// <response code="401">Não autenticado</response>
+    /// <response code="403">Não autorizado</response>
     /// <response code="409">Nendoroid já cadastrada</response>
     /// <response code="500">Erro interno</response>
     [HttpPost]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+    [CustomAuthorize(Role = "admin")]
     [ProducesResponseType(typeof(CustomResponse<Nendoroid>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ModelValidationErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(NaoAutenticadoResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(NaoAutorizadoResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ConflictResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(InternalServerErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Post([FromBody] NendoroidRequest nendoroidRequest)
@@ -99,10 +104,15 @@ public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository ne
     /// </remarks>
     /// <returns>Dados da nendoroid buscada</returns>
     /// <response code="200">Nendoroid encontrada com sucesso</response>
+    /// <response code="401">Não autenticado</response>
+    /// <response code="403">Não autorizado</response>
     /// <response code="404">Nendoroid não encontrada</response>
     /// <response code="500">Erro interno</response>
     [HttpGet]
+    [CustomAuthorize(Role = "comum")]
     [ProducesResponseType(typeof(CustomResponse<Nendoroid>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(NaoAutenticadoResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(NaoAutorizadoResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(NotFoundResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(InternalServerErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Nendoroid>> Get([FromQuery] string numeracao)
@@ -127,10 +137,15 @@ public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository ne
     /// </remarks>
     /// <returns>Mensagem padrão</returns>
     /// <response code="200">Nendoroid deletada com sucesso</response>
+    /// <response code="401">Não autenticado</response>
+    /// <response code="403">Não autorizado</response>
     /// <response code="404">Nendoroid não encontrada</response>
     /// <response code="500">Erro interno</response>
     [HttpDelete]
+    [CustomAuthorize(Role = "admin")]
     [ProducesResponseType(typeof(OkResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(NaoAutenticadoResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(NaoAutorizadoResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(NotFoundResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(InternalServerErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete([FromQuery] string numeracao)
@@ -174,11 +189,16 @@ public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository ne
     /// <returns>Mensagem padrão</returns>
     /// <response code="200">Nendoroid alterada com sucesso</response>
     /// <response code="400">Erro no corpo da requisição</response>
+    /// <response code="401">Não autenticado</response>
+    /// <response code="403">Não autorizado</response>
     /// <response code="404">Nendoroid não encontrada</response>
     /// <response code="500">Erro interno</response>
     [HttpPut]
+    [CustomAuthorize(Role = "admin")]
     [ProducesResponseType(typeof(OkResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ModelValidationErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(NaoAutenticadoResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(NaoAutorizadoResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(NotFoundResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(InternalServerErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Put([FromBody] NendoroidRequest nendoroidRequest)

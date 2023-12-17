@@ -48,3 +48,12 @@ SET timezone = 'UTC';
 
 ALTER TABLE nendoroid ALTER COLUMN datacadastro TYPE timestamp with time zone;
 ALTER TABLE nendoroid ALTER COLUMN dataalteracao TYPE timestamp with time zone;
+
+CREATE TABLE usuario(
+	id SERIAL NOT NULL PRIMARY KEY,
+	nome VARCHAR(250) NOT NULL,
+	senha VARCHAR(300) NOT NULL,
+	cargo VARCHAR(30) NOT NULL,
+	datacadastro timestamp with time zone NOT NULL,
+	dataalteracao timestamp with time zone
+)
