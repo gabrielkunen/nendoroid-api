@@ -9,12 +9,13 @@ using NendoroidApi.Response;
 using NendoroidApi.Response.Base;
 using NendoroidApi.Response.Common;
 
-namespace NendoroidApi.Controllers;
+namespace NendoroidApi.V1.Controllers;
 
 [ApiController]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
-[Route("[controller]")]
+[ApiVersion("1.0")]
+[Route("v{version:apiVersion}/[controller]")]
 [EnableRateLimiting("ApiBlock")]
 public class AutenticacaoController(IUsuarioRepository usuarioRepository, ITokenService tokenService) : ControllerBase
 {
@@ -41,7 +42,7 @@ public class AutenticacaoController(IUsuarioRepository usuarioRepository, IToken
     /// <response code="401">Usuário ou senha inválidos.</response>
     /// <response code="429">Excesso de requisições.</response>
     /// <response code="500">Erro interno</response>
-    [HttpPost("/Login")]
+    [HttpPost]
     [AllowAnonymous]
     [ProducesResponseType(typeof(CustomResponse<LoginResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ModelValidationErrorResponse), StatusCodes.Status400BadRequest)]

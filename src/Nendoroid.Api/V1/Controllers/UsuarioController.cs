@@ -9,12 +9,13 @@ using NendoroidApi.Filters;
 using NendoroidApi.Response.Base;
 using NendoroidApi.Response.Common;
 
-namespace NendoroidApi.Controllers;
+namespace NendoroidApi.V1.Controllers;
 
 [ApiController]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
-[Route("[controller]")]
+[ApiVersion("1.0")]
+[Route("v{version:apiVersion}/[controller]")]
 [EnableRateLimiting("ApiBlock")]
 public class UsuarioController(IUsuarioRepository usuarioRepository, IUnitOfWork unitOfWork) : ControllerBase
 {
