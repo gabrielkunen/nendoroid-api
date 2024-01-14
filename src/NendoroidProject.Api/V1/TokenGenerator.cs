@@ -5,13 +5,13 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace NendoroidProject.Api;
+namespace NendoroidProject.Api.V1;
 
-public class TokenService : ITokenService
+public class TokenGenerator : ITokenService
 {
     private readonly IConfiguration _configuration;
 
-    public TokenService(IConfiguration configuration)
+    public TokenGenerator(IConfiguration configuration)
     {
         _configuration = configuration;
     }
@@ -20,7 +20,7 @@ public class TokenService : ITokenService
     {
         var handler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["ChaveToken"]!);
-		var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
+        var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -31,7 +31,7 @@ public class TokenService : ITokenService
         var token = handler.CreateToken(tokenDescriptor);
         return handler.WriteToken(token);
     }
-    
+
     private static ClaimsIdentity GerarClaims(Usuario usuario)
     {
         var ci = new ClaimsIdentity();

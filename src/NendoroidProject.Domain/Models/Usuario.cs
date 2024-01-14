@@ -1,8 +1,7 @@
 ﻿namespace NendoroidProject.Domain.Models;
 
-public class Usuario
+public class Usuario : Entity 
 {
-    public int Id { get; }
     public string Nome { get; private set; }
     public string Senha { get; private set; }
     public string Cargo { get; private set; }

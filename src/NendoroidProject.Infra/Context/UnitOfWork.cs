@@ -1,4 +1,4 @@
-using NendoroidProject.Domain.Interfaces.Repository.Base;
+using NendoroidProject.Domain.Interfaces.Repository;
 
 namespace NendoroidProject.Infra.Context;
 

@@ -1,31 +1,19 @@
 using System.Reflection;
 using System.Text;
-using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using NendoroidProject.Api;
+using NendoroidProject.Api.Configuration;
 using NendoroidProject.Api.Middlewares;
 using NendoroidProject.Api.Response.Base;
-using NendoroidProject.Api.Response.Common;
-using NendoroidProject.Domain.Interfaces.Repository;
-using NendoroidProject.Domain.Interfaces.Repository.Base;
-using NendoroidProject.Domain.Interfaces.Services;
-using NendoroidProject.Infra.Context;
-using NendoroidProject.Infra.Repository;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerOptions>();
 
 builder.Services.AddSwaggerGen(options => {
     options.OperationFilter<SwaggerDefaultValues>();
@@ -62,60 +50,28 @@ builder.Services.AddSwaggerGen(options => {
 builder.Services.Configure<ApiBehaviorOptions>(options
     => options.InvalidModelStateResponseFactory = ModelValidationErrorResponse.GerarModelValidationErrorResponse);
 
-builder.Services
-    .AddAuthentication(x =>
-    {
-        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(x =>
-    {
-        x.RequireHttpsMetadata = false;
-        x.SaveToken = true;
-        x.TokenValidationParameters = new TokenValidationParameters
-        {
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["ChaveToken"]!)),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });
+builder.Services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["ChaveToken"]!)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
-builder.Services.AddAuthorization(); 
+builder.Services.AddAuthorization();
 
-builder.Services.AddRateLimiter(options =>
-{
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+builder.Services.AddRateLimiter();
 
-    options.AddFixedWindowLimiter(policyName: "ApiBlock", options =>
-    {
-        options.PermitLimit = 5;
-        options.Window = TimeSpan.FromSeconds(10);
-        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        options.QueueLimit = 0;
-    });
-
-    options.OnRejected = async (context, token) =>
-    {
-        context.HttpContext.Response.StatusCode = 429;
-        context.HttpContext.Response.ContentType = "application/json";
-
-        TooManyRequestResponse responseContent;
-        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
-        {
-            responseContent = new TooManyRequestResponse($"Você excedeu o máximo de requests no momento. Tente novamente em {retryAfter.TotalSeconds} segundo(s).");
-        }
-        else
-        {
-            responseContent = new TooManyRequestResponse("Você excedeu o máximo de requests no momento. Tente novamente mais tarde.");
-        }
-
-        var jsonResult = new JsonResult(responseContent);
-        await jsonResult.ExecuteResultAsync(new ActionContext
-        {
-            HttpContext = context.HttpContext
-        });
-    };
-});
+builder.Services.ResolveDependencies();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -131,12 +87,6 @@ builder.Services.AddVersionedApiExplorer(options =>
     options.GroupNameFormat = "'v'VVV";
     options.SubstituteApiVersionInUrl = true;
 });
-
-builder.Services.AddScoped<DbSession>();
-builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddTransient<INendoroidRepository, NendoroidRepository>();
-builder.Services.AddTransient<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddTransient<ITokenService, TokenService>();
 
 var app = builder.Build();
 

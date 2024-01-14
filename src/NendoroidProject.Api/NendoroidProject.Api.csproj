@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="V1\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\NendoroidProject.Domain\NendoroidProject.Domain.csproj" />
     <ProjectReference Include="..\NendoroidProject.Infra\NendoroidProject.Infra.csproj" />
   </ItemGroup>

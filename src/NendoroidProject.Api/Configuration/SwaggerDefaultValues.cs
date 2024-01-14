@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace NendoroidProject.Api;
+namespace NendoroidProject.Api.Configuration;
 
 public class SwaggerDefaultValues : IOperationFilter
 {

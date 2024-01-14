@@ -1,6 +1,6 @@
 namespace NendoroidProject.Domain.Models;
-public class Nendoroid {
-    private int Id { get; }
+public class Nendoroid : Entity 
+{
     public string Nome { get; private set; }
     public string Numeracao { get; private set; }
     public decimal? Preco { get; private set; }
@@ -13,7 +13,7 @@ public class Nendoroid {
     public DateTime DataCadastro { get; private set; }
     public DateTime? DataAlteracao { get; private set; }
     public string? Especificacoes { get; private set; }
-    
+
     // Dapper
     public Nendoroid(){}
     public Nendoroid(string nome, string numeracao, decimal? preco, string serie, string fabricante, string? escultor, string cooperacao, 

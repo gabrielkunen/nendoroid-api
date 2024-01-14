@@ -7,7 +7,6 @@ using NendoroidProject.Api.Request;
 using NendoroidProject.Api.Response.Base;
 using NendoroidProject.Api.Response.Common;
 using NendoroidProject.Domain.Interfaces.Repository;
-using NendoroidProject.Domain.Interfaces.Repository.Base;
 using NendoroidProject.Domain.Models;
 
 namespace NendoroidProject.Api.V1.Controllers;

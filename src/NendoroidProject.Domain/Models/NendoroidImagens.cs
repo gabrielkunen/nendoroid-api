@@ -1,6 +1,6 @@
 namespace NendoroidProject.Domain.Models;
-public class NendoroidImagens {
-    private int Id { get; }
+public class NendoroidImagens : Entity 
+{
     public int IdNendoroid { get; private set; }
     public string Url { get; private set; }
     

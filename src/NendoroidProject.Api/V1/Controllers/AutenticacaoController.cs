@@ -16,7 +16,7 @@ namespace NendoroidProject.Api.V1.Controllers;
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
 [ApiVersion("1.0")]
-[Route("v{version:apiVersion}/[controller]")]
+[Route("v{version:apiVersion}/autenticacao")]
 [EnableRateLimiting("ApiBlock")]
 public class AutenticacaoController(IUsuarioRepository usuarioRepository, ITokenService tokenService) : ControllerBase
 {

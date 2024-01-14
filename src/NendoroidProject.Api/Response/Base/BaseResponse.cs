@@ -3,7 +3,8 @@ using NendoroidProject.Domain.Extensions;
 
 namespace NendoroidProject.Api.Response.Base;
 
-public abstract class BaseResponse {
+public abstract class BaseResponse 
+{
     public bool Sucesso { get; private set; } = false;
     public string Mensagem { get; private set; } = "";
     public DateTime Timestamp { get; private set; }

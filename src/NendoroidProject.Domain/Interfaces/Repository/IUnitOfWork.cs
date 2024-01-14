@@ -1,4 +1,4 @@
-namespace NendoroidProject.Domain.Interfaces.Repository.Base;
+namespace NendoroidProject.Domain.Interfaces.Repository;
 
 public interface IUnitOfWork : IDisposable
 {
