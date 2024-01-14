@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\NendoroidApi", "src\Nendoroid.Api\NendoroidApi.csproj", "{4B7CA9FE-CCB8-4000-9F5F-BE891A2E4C36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\NendoroidProject.Api", "src\NendoroidProject.Api\NendoroidProject.Api.csproj", "{4B7CA9FE-CCB8-4000-9F5F-BE891A2E4C36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\NendoroidWebCrawler", "src\Nendoroid.WebCrawler\NendoroidWebCrawler.csproj", "{DD9D6F3A-06B5-40BF-88E4-F79657AFA17D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\NendoroidProject.WebCrawler", "src\NendoroidProject.WebCrawler\NendoroidProject.WebCrawler.csproj", "{DD9D6F3A-06B5-40BF-88E4-F79657AFA17D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\NendoroidProject.Domain", "src\NendoroidProject.Domain\NendoroidProject.Domain.csproj", "{7A6B7A24-BF21-4B52-8310-343D696C66B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\NendoroidProject.Infra", "src\NendoroidProject.Infra\NendoroidProject.Infra.csproj", "{D08A89DD-2FB1-4B5E-B5CC-570DFB90FEAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +28,17 @@ Global
 		{DD9D6F3A-06B5-40BF-88E4-F79657AFA17D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD9D6F3A-06B5-40BF-88E4-F79657AFA17D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD9D6F3A-06B5-40BF-88E4-F79657AFA17D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A6B7A24-BF21-4B52-8310-343D696C66B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A6B7A24-BF21-4B52-8310-343D696C66B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A6B7A24-BF21-4B52-8310-343D696C66B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A6B7A24-BF21-4B52-8310-343D696C66B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D08A89DD-2FB1-4B5E-B5CC-570DFB90FEAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D08A89DD-2FB1-4B5E-B5CC-570DFB90FEAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D08A89DD-2FB1-4B5E-B5CC-570DFB90FEAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D08A89DD-2FB1-4B5E-B5CC-570DFB90FEAE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7A6B7A24-BF21-4B52-8310-343D696C66B6} = {5FE696DC-10B9-4FA4-A573-74FBDB379D9D}
+		{D08A89DD-2FB1-4B5E-B5CC-570DFB90FEAE} = {44949B01-3A9F-4C91-9E3B-1BC01794DBF3}
 	EndGlobalSection
 EndGlobal
