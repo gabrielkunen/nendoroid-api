@@ -47,11 +47,34 @@ public static class DbPersistence
         return quantidade > 0;
     }
 
+    public static async Task<int> BuscarIdNendoroid(string numeracao)
+    {
+        var comando = $"SELECT id FROM nendoroid WHERE NUMERACAO = @numeracao";
+
+        var argumentos = new { numeracao };
+
+        var conexao = new NpgsqlConnection(connectionString);
+
+        var idNendoroid = await conexao.QueryFirstAsync<int>(comando, argumentos);
+        return idNendoroid;
+    }
+
     public static async Task Delete(string numeracao)
     {
         var comando = $"DELETE FROM nendoroid WHERE NUMERACAO=(@numeracao)";
 
         var argumentos = new {  numeracao  };
+
+        var conexao = new NpgsqlConnection(connectionString);
+
+        await conexao.ExecuteAsync(comando, argumentos);
+    }
+
+    public static async Task DeleteImagens(int idNendoroid)
+    {
+        var comando = $"DELETE FROM nendoroidimagens WHERE idNendoroid=(@idNendoroid)";
+
+        var argumentos = new { idNendoroid };
 
         var conexao = new NpgsqlConnection(connectionString);
 

@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using NendoroidProject.Domain.Models;
-using NendoroidProject.WebCrawler;;
+using NendoroidProject.WebCrawler;
+using System.Web;
 
 using var httpClient = new HttpClient();
 int quantidadeAtualPaginas = await ExtrairQuantidadePaginas();
@@ -8,9 +9,9 @@ const string urlGoodSmile = "https://www.goodsmile.info/en/products/category/nen
 
 var paginasPorTask = quantidadeAtualPaginas / 3;
 
-Task[] tasks = 
+Task[] tasks =
 [
-    Task.Run(() => ExtrairDados(1, paginasPorTask)), 
+    Task.Run(() => ExtrairDados(1, quantidadeAtualPaginas)), 
     Task.Run(() => ExtrairDados(paginasPorTask + 1, paginasPorTask * 2)), 
     Task.Run(() => ExtrairDados(paginasPorTask * 2 + 1, quantidadeAtualPaginas))
 ];
@@ -28,6 +29,8 @@ async Task ExtrairDados(int paginaInicial, int paginaFinal)
         var htmlDocument = new HtmlDocument();
         htmlDocument.LoadHtml(html);
 
+        // Páginas vazias
+        if (htmlDocument.DocumentNode.SelectNodes("//span[contains(@class, 'hitTtl')]") == null) continue;
         var quantidadeNendoNaPagina = htmlDocument.DocumentNode.SelectNodes("//span[contains(@class, 'hitTtl')]").ToList().Count;
         
         for (int j = 0; j < quantidadeNendoNaPagina; j++)
@@ -72,6 +75,7 @@ async Task<int> ExtrairQuantidadePaginas()
 
 async Task ExtrairDadosPaginaNendoroid(HtmlDocument htmlDocumentNendo, string nendoUrl)
 {
+    // Extração dos dados do html
     var nome = htmlDocumentNendo.ExtrairNome();
     var numeracao = htmlDocumentNendo.ExtrairNumeracao();
     var serie = htmlDocumentNendo.ExtrairSerie();
@@ -82,11 +86,25 @@ async Task ExtrairDadosPaginaNendoroid(HtmlDocument htmlDocumentNendo, string ne
     var cooperacao = htmlDocumentNendo.ExtrairCooperacao();
     var especificacoes = htmlDocumentNendo.ExtrairEspecificacoes();
 
+    // Decode da string com marcação html
+    nome = HttpUtility.HtmlDecode(nome);
+    numeracao = HttpUtility.HtmlDecode(numeracao);
+    serie = HttpUtility.HtmlDecode(serie);
+    fabricante = HttpUtility.HtmlDecode(fabricante);
+    escultor = HttpUtility.HtmlDecode(escultor);
+    cooperacao = HttpUtility.HtmlDecode(cooperacao);
+    especificacoes = HttpUtility.HtmlDecode(especificacoes);
+
     var nendoroid = new Nendoroid(nome, numeracao, preco, serie, fabricante, escultor, cooperacao, 
         dataLancamento, nendoUrl, especificacoes);
 
     var nendoroidJaExiste = await DbPersistence.Any(nendoroid.Numeracao);
-    if (nendoroidJaExiste) await DbPersistence.Delete(nendoroid.Numeracao);
+    if (nendoroidJaExiste)
+    {
+        var idNendoroidExclusao = await DbPersistence.BuscarIdNendoroid(nendoroid.Numeracao);
+        await DbPersistence.DeleteImagens(idNendoroidExclusao);
+        await DbPersistence.Delete(nendoroid.Numeracao);
+    }
 
     var idNendo = await DbPersistence.Add(nendoroid);
 

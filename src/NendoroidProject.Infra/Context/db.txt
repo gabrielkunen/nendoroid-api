@@ -57,3 +57,6 @@ CREATE TABLE usuario(
 	datacadastro timestamp with time zone NOT NULL,
 	dataalteracao timestamp with time zone
 )
+
+ALTER TABLE nendoroidimagens DROP CONSTRAINT fk_nendoroid;
+ALTER TABLE nendoroidimagens ADD CONSTRAINT fk_nendoroid FOREIGN KEY (idNendoroid) REFERENCES nendoroid (id);
