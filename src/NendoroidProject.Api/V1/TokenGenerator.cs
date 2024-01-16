@@ -41,4 +41,14 @@ public class TokenGenerator : ITokenService
 
         return ci;
     }
+
+    public bool SenhaValida(string senhaRequest, string senhaAtualUsuario)
+    {
+        return BCrypt.Net.BCrypt.Verify(senhaRequest, senhaAtualUsuario);
+    }
+
+    public string HashSenha(string senha, int workFactor)
+    {
+        return BCrypt.Net.BCrypt.HashPassword(senha, workFactor);
+    }
 }

@@ -121,7 +121,7 @@ public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository ne
     [ProducesResponseType(typeof(NotFoundResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(TooManyRequestResponse), StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(typeof(InternalServerErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Nendoroid>> Get([FromQuery] string numeracao)
+    public async Task<IActionResult> Get([FromQuery] string numeracao)
     {
         var nendoroid = await _nendoroidRepository.Get(numeracao);
 

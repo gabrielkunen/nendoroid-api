@@ -57,7 +57,7 @@ public class AutenticacaoController(IUsuarioRepository usuarioRepository, IToken
         if(usuario == null)
             return Unauthorized(new NaoAutenticadoResponse("Usuário ou senha inválidos."));
 
-        var result = BCrypt.Net.BCrypt.Verify(request.Senha, usuario.Senha);
+        var result = _tokenService.SenhaValida(request.Senha, usuario.Senha);
 
         if(result) {
             var token = _tokenService.Gerar(usuario);

@@ -7,6 +7,7 @@ using NendoroidProject.Api.Request;
 using NendoroidProject.Api.Response.Base;
 using NendoroidProject.Api.Response.Common;
 using NendoroidProject.Domain.Interfaces.Repository;
+using NendoroidProject.Domain.Interfaces.Services;
 using NendoroidProject.Domain.Models;
 
 namespace NendoroidProject.Api.V1.Controllers;
@@ -17,10 +18,11 @@ namespace NendoroidProject.Api.V1.Controllers;
 [ApiVersion("1.0")]
 [Route("v{version:apiVersion}/usuarios")]
 [EnableRateLimiting("ApiBlock")]
-public class UsuarioController(IUsuarioRepository usuarioRepository, IUnitOfWork unitOfWork) : ControllerBase
+public class UsuarioController(IUsuarioRepository usuarioRepository, IUnitOfWork unitOfWork, ITokenService tokenService) : ControllerBase
 {
     private readonly IUsuarioRepository _usuarioRepository = usuarioRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ITokenService _tokenService = tokenService;
 
     /// <summary>
     /// Cadastro de um novo usuário
@@ -60,7 +62,7 @@ public class UsuarioController(IUsuarioRepository usuarioRepository, IUnitOfWork
         if(usuarioJaExiste)
             return Conflict(new ConflictResponse("Usuário com este nome já cadastrado."));
 
-        var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Senha, workFactor: 14);
+        var passwordHash = _tokenService.HashSenha(request.Senha, 14);
 
         Usuario usuario = request;
         usuario.SetarDataCadastroUtcNow();
