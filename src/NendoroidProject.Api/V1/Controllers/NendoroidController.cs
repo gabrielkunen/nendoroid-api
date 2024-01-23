@@ -163,6 +163,8 @@ public class NendoroidController(IUnitOfWork unitOfWork, INendoroidRepository ne
         if(!nendoroidExiste)
             return NotFound(new NotFoundResponse("Nendoroid com esta numeração não cadastrada."));
 
+        var nendoroidExclusao = await _nendoroidRepository.Get(numeracao);
+        await _nendoroidRepository.DeleteImagens(nendoroidExclusao!.Id);
         await _nendoroidRepository.Delete(numeracao);
 
         return Ok(new OkResponse("Nendoroid deletada com sucesso."));

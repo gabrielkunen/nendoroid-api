@@ -104,6 +104,7 @@ namespace NendoroidProject.Api.Tests.V1.Controllers
             var request = "1583";
 
             _mocker.GetMock<INendoroidRepository>().Setup(m => m.Any(It.IsAny<string>())).ReturnsAsync(true);
+            _mocker.GetMock<INendoroidRepository>().Setup(m => m.Get(It.IsAny<string>())).ReturnsAsync(new Nendoroid { Id = 1});
 
             var retorno = await _controller.Delete(request) as ObjectResult;
             var responseBody = retorno?.Value as OkResponse;

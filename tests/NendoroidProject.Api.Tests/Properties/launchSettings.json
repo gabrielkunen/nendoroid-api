@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "NendoroidProject.Api.Tests": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:11864;http://localhost:11865"
+    }
+  }
+}
